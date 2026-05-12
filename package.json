@@ -1,7 +1,7 @@
 {
   "name": "homebridge-envisalink-uno",
-  "version": "0.1.0",
-  "description": "Homebridge plugin for the EnvisaLink UNO security system module",
+  "version": "0.1.1",
+  "description": "Homebridge plugin for the EnvisaLink UNO alarm system — auto-discovers zones, supports arm/disarm/night via HomeKit",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -18,9 +18,15 @@
   "keywords": [
     "homebridge-plugin",
     "envisalink",
+    "envisalink-uno",
+    "eyezon",
     "uno",
     "security",
-    "alarm"
+    "alarm",
+    "security-system",
+    "homekit",
+    "honeywell",
+    "vista"
   ],
   "author": "Carson Wilson",
   "license": "MIT",

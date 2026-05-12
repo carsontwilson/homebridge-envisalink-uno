@@ -57,7 +57,7 @@ function parseZoneTitle(title: string, zoneNumber: number): DiscoveredZone | nul
   let rest = title.slice(colonIdx + 1).trim();
 
   // Strip optional time-ago prefix: "30 Minutes Ago", "2 Hours Ago", "40 Hours Ago"
-  rest = rest.replace(/^\d+\s+(Minutes?|Hours?|Days?)\s+Ago\s*/i, '').trim();
+  rest = rest.replace(/^\d+\s+(Seconds?|Minutes?|Hours?|Days?)\s+Ago\s*/i, '').trim();
 
   const name = rest || `Zone ${zoneNumber}`;
 

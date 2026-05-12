@@ -36,7 +36,7 @@ function parseHtml(html: string): object {
     if (colonIdx === -1) continue;
     const state = title.slice(0, colonIdx).trim().toUpperCase();
     if (state !== 'OPEN' && state !== 'CLOSED') continue;
-    let name = title.slice(colonIdx + 1).trim().replace(/^\d+\s+(Minutes?|Hours?|Days?)\s+Ago\s*/i, '').trim();
+    let name = title.slice(colonIdx + 1).trim().replace(/^\d+\s+(Seconds?|Minutes?|Hours?|Days?)\s+Ago\s*/i, '').trim();
     if (!name) name = `Zone ${zoneNumber}`;
     const lower = name.toLowerCase();
     let sensorType = 'contact';

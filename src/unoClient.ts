@@ -51,6 +51,7 @@ export class UnoClient extends EventEmitter {
     private readonly log: Logger,
   ) {
     super();
+    this.setMaxListeners(150); // one listener per zone/partition accessory
   }
 
   connect(): void {
@@ -100,7 +101,9 @@ export class UnoClient extends EventEmitter {
   }
 
   sendDisarm(pin: string, partition = 1): void {
-    this.send(`${CMD.DISARM},${partition},${pin}`);
+    const cmd = `${CMD.DISARM},${partition},${pin}`;
+    this.log.debug(`TPI send: ${CMD.DISARM},${partition},****`);
+    if (this.socket && !this.socket.destroyed) this.socket.write(cmd + '\n');
   }
 
   private send(cmd: string): void {
@@ -130,7 +133,10 @@ export class UnoClient extends EventEmitter {
 
     if (line.startsWith('Login:')) {
       this.log.debug('Sending password');
-      this.send(this.password);
+      // Send password directly without going through send() to avoid logging it
+      if (this.socket && !this.socket.destroyed) {
+        this.socket.write(this.password + '\n');
+      }
       return;
     }
 

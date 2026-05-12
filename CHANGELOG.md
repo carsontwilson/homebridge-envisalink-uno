@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.9] - 2026-05-12
+### Fixed
+- Password and PIN no longer appear in debug logs
+- MaxListenersExceededWarning resolved — raised emitter limit to handle large zone counts
+- Discovery: "Seconds Ago" time prefix now stripped from zone names correctly
+
 ## [0.1.8] - 2026-05-12
 ### Fixed
 - UI server compiled as true ESM with native import statements — fixes `require is not defined` error when Homebridge forks server.js under Node with "type":"module"

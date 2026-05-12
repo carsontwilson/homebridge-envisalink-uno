@@ -50,6 +50,17 @@ See [doc/ARCHITECTURE.md](doc/ARCHITECTURE.md) for the plugin's design, file str
 
 ---
 
+## Security — no credentials in source
+
+**Never commit real credentials.** The pre-commit hook will block you if you try.
+
+- Real values (IP address, password, PIN) go in `.env` — which is gitignored
+- Use `.env.example` as a template with placeholder values only
+- Source files, docs, and test fixtures must use obviously fake values (e.g. `192.168.1.100`, `user`, `1234`)
+- If the hook blocks a legitimate commit (e.g. a clearly fake MAC in a test fixture), review the hook rather than bypassing it
+
+---
+
 ## License
 
 MIT

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EnvisaLink UNO Setup</title>
+</head>
+<body>
+  <div class="container-fluid">
+
+    <div class="row mb-3 mt-3">
+      <div class="col">
+        <p class="text-muted">
+          Enter your EnvisaLink UNO IP address and password, then click
+          <strong>Discover System</strong> to automatically find your zones.
+        </p>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-5">
+        <label for="host" class="form-label">IP Address</label>
+        <input type="text" class="form-control" id="host" placeholder="192.168.1.100">
+      </div>
+      <div class="col-md-4">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" placeholder="user">
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button class="btn btn-primary w-100" id="discoverBtn" onclick="discover()">
+          Discover System
+        </button>
+      </div>
+    </div>
+
+    <div id="status" class="row mb-3" style="display:none !important">
+      <div class="col">
+        <div id="statusMsg" class="alert"></div>
+      </div>
+    </div>
+
+    <div id="results" style="display:none">
+      <hr>
+      <h5 id="partitionTitle"></h5>
+      <table class="table table-sm table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>State</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody id="zoneTable"></tbody>
+      </table>
+      <button class="btn btn-success" onclick="saveConfig()">Save Configuration</button>
+    </div>
+
+  </div>
+
+  <script>
+    let discoveredData = null;
+
+    async function discover() {
+      const host = document.getElementById('host').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!host || !password) {
+        showStatus('Please enter both IP address and password.', 'warning');
+        return;
+      }
+
+      const btn = document.getElementById('discoverBtn');
+      btn.disabled = true;
+      btn.textContent = 'Discovering...';
+      hideResults();
+
+      try {
+        const result = await homebridge.request('/discover', { host, password });
+        discoveredData = { host, password, ...result };
+        renderResults(result);
+        showStatus(`Found ${result.zones.length} zone(s).`, 'success');
+      } catch (err) {
+        showStatus(`Discovery failed: ${err.message || err}`, 'danger');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Discover System';
+      }
+    }
+
+    function renderResults(data) {
+      document.getElementById('partitionTitle').textContent =
+        `Partition: ${data.partitionName}`;
+
+      const tbody = document.getElementById('zoneTable');
+      tbody.innerHTML = '';
+
+      for (const zone of data.zones) {
+        const stateClass = zone.state === 'OPEN' ? 'text-danger' : 'text-success';
+        const typeOptions = ['contact', 'motion', 'smoke', 'co']
+          .map(t => `<option value="${t}" ${t === zone.sensorType ? 'selected' : ''}>${t}</option>`)
+          .join('');
+
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td>${zone.zoneNumber}</td>
+            <td>${zone.name}</td>
+            <td class="${stateClass}">${zone.state}</td>
+            <td>
+              <select class="form-select form-select-sm" id="type-${zone.zoneNumber}">
+                ${typeOptions}
+              </select>
+            </td>
+          </tr>
+        `);
+      }
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    async function saveConfig() {
+      if (!discoveredData) return;
+
+      const zones = discoveredData.zones.map(zone => ({
+        zoneNumber: zone.zoneNumber,
+        name: zone.name,
+        sensorType: document.getElementById(`type-${zone.zoneNumber}`).value,
+      }));
+
+      try {
+        const currentConfig = await homebridge.getPluginConfig();
+        const updated = {
+          ...currentConfig[0],
+          host: discoveredData.host,
+          password: discoveredData.password,
+          partitionName: discoveredData.partitionName,
+          zones,
+        };
+        await homebridge.updatePluginConfig([updated]);
+        await homebridge.savePluginConfig();
+        showStatus('Configuration saved! Homebridge will restart.', 'success');
+      } catch (err) {
+        showStatus(`Save failed: ${err.message || err}`, 'danger');
+      }
+    }
+
+    function showStatus(msg, type) {
+      const el = document.getElementById('statusMsg');
+      el.className = `alert alert-${type}`;
+      el.textContent = msg;
+      document.getElementById('status').style.removeProperty('display');
+    }
+
+    function hideResults() {
+      document.getElementById('results').style.display = 'none';
+      document.getElementById('status').style.setProperty('display', 'none', 'important');
+    }
+
+    // Pre-fill from existing config on load
+    homebridge.getPluginConfig().then(configs => {
+      const cfg = configs[0];
+      if (cfg?.host) document.getElementById('host').value = cfg.host;
+      if (cfg?.password) document.getElementById('password').value = cfg.password;
+    });
+  </script>
+</body>
+</html>

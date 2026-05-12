@@ -1,0 +1,89 @@
+{
+  "pluginAlias": "EnvisalinkUNO",
+  "pluginType": "platform",
+  "customUi": true,
+  "singular": true,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Plugin Name",
+        "type": "string",
+        "default": "EnvisaLink UNO",
+        "required": true
+      },
+      "host": {
+        "title": "IP Address",
+        "type": "string",
+        "format": "ipv4",
+        "required": true,
+        "description": "IP address of your EnvisaLink UNO on your local network"
+      },
+      "password": {
+        "title": "Password",
+        "type": "string",
+        "required": true,
+        "description": "EnvisaLink UNO password (default is 'user')"
+      },
+      "pin": {
+        "title": "Alarm PIN",
+        "type": "string",
+        "required": true,
+        "description": "Your alarm panel PIN for arming and disarming"
+      },
+      "partitionName": {
+        "title": "Partition Name",
+        "type": "string",
+        "default": "Home",
+        "description": "Name for the security system in HomeKit (auto-populated by discovery)"
+      },
+      "zones": {
+        "title": "Zones",
+        "type": "array",
+        "description": "Auto-populated by the 'Discover System' button above. You can also add zones manually.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "zoneNumber": {
+              "title": "Zone Number",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            },
+            "name": {
+              "title": "Zone Name",
+              "type": "string"
+            },
+            "sensorType": {
+              "title": "Sensor Type",
+              "type": "string",
+              "enum": ["contact", "motion", "smoke", "co"],
+              "default": "contact"
+            }
+          },
+          "required": ["zoneNumber", "name", "sensorType"]
+        }
+      }
+    }
+  },
+  "layout": [
+    {
+      "type": "help",
+      "helpvalue": "<div class='alert alert-info'>Enter your IP address and password below, then click <strong>Discover System</strong> to automatically find your zones.</div>"
+    },
+    "name",
+    "host",
+    "password",
+    "pin",
+    {
+      "key": "zones",
+      "type": "array",
+      "title": "Zones",
+      "items": [
+        "zones[].zoneNumber",
+        "zones[].name",
+        "zones[].sensorType"
+      ]
+    }
+  ]
+}

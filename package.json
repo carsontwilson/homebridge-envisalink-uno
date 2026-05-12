@@ -1,0 +1,38 @@
+{
+  "name": "homebridge-envisalink-uno",
+  "version": "0.1.0",
+  "description": "Homebridge plugin for the EnvisaLink UNO security system module",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "envisalink",
+    "uno",
+    "security",
+    "alarm"
+  ],
+  "author": "Carson Wilson",
+  "license": "MIT",
+  "engines": {
+    "node": "^22.10.0 || ^24.0.0",
+    "homebridge": "^1.8.0 || ^2.0.0"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "homebridge": "^2.0.0",
+    "typescript": "^5.4.0"
+  },
+  "homebridge": {
+    "displayName": "EnvisaLink UNO",
+    "plugin_alias": "EnvisalinkUNO",
+    "type": "platform"
+  }
+}

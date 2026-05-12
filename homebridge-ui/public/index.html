@@ -176,10 +176,11 @@
         await homebridge.updatePluginConfig([updated]);
         await homebridge.savePluginConfig();
         currentZones = zones;
-        homebridge.enableSaveButton();
         showStatus('Configuration saved! Click Save above to restart Homebridge.', 'success');
       } catch (err) {
         showStatus(`Save failed: ${err.message || err}`, 'danger');
+      } finally {
+        homebridge.enableSaveButton();
       }
     }
 

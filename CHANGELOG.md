@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.20 (2026-05-12)
+
+### Bug Fixes
+- Always enable SAVE button after Save Configuration, even if an error occurs
+
 ## 0.1.19 (2026-05-12)
 
 ### Bug Fixes

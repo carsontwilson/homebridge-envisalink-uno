@@ -161,6 +161,10 @@
         sensorType: document.getElementById(`type-${zone.zoneNumber}`)?.value || zone.sensorType,
       }));
 
+      const btn = document.getElementById('saveConfigBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
       try {
         const currentConfig = await homebridge.getPluginConfig();
         const updated = {
@@ -176,11 +180,13 @@
         await homebridge.updatePluginConfig([updated]);
         await homebridge.savePluginConfig();
         currentZones = zones;
+        homebridge.enableSaveButton();
         showStatus('Configuration saved! Click Save above to restart Homebridge.', 'success');
       } catch (err) {
-        showStatus(`Save failed: ${err.message || err}`, 'danger');
+        showStatus(`Could not save configuration: ${err.message || err}`, 'danger');
       } finally {
-        homebridge.enableSaveButton();
+        btn.disabled = false;
+        btn.textContent = 'Save Configuration';
       }
     }
 

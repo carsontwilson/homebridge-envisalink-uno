@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.21 (2026-05-12)
+
+### Bug Fixes
+- Save Configuration button shows "Saving..." during operation
+- SAVE only enabled on successful save, not on error
+- Errors during save are clearly surfaced to the user
+
 ## 0.1.20 (2026-05-12)
 
 ### Bug Fixes

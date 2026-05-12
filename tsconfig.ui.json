@@ -1,6 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node10",
     "rootDir": "homebridge-ui",
     "outDir": "homebridge-ui",
     "declaration": false,

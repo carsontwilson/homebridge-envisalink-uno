@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.18 (2026-05-12)
+
+### Bug Fixes
+- Layout fix: fields now in two-column grid to prevent wrapping
+- Type dropdown changes now correctly save when clicking Save Configuration
+- PIN validation now properly blocks saving (no silent failures)
+- SAVE interception prevents saving without completing Save Configuration first
+- currentZones updated after save so subsequent saves remain consistent
+
 ## 0.1.17 (2026-05-12)
 
 ### Features

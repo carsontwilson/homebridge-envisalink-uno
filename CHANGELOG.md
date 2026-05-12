@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.14 (2026-05-12)
+
+### Features
+- Re-opening plugin config now loads existing zones without requiring re-discovery
+- PIN field added to config UI
+- SAVE enabled on load if config already exists; disabled after fresh discovery until Save Configuration is clicked
+- Validation warns if IP, password, or PIN are missing before saving
+
 ## 0.1.12 (2026-05-12)
 
 ### Bug Fixes

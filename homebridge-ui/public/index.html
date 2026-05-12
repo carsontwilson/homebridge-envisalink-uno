@@ -53,7 +53,9 @@
         </thead>
         <tbody id="zoneTable"></tbody>
       </table>
-      <button class="btn btn-success" onclick="saveConfig()">Save Configuration</button>
+      <div class="d-flex justify-content-end mt-2">
+        <button class="btn btn-success" id="saveConfigBtn" onclick="saveConfig()">Save Configuration</button>
+      </div>
     </div>
 
   </div>
@@ -138,7 +140,8 @@
         };
         await homebridge.updatePluginConfig([updated]);
         await homebridge.savePluginConfig();
-        showStatus('Configuration saved! Homebridge will restart.', 'success');
+        homebridge.enableSave();
+        showStatus('Configuration saved! Click Save above to restart Homebridge.', 'success');
       } catch (err) {
         showStatus(`Save failed: ${err.message || err}`, 'danger');
       }
@@ -155,6 +158,10 @@
       document.getElementById('results').style.display = 'none';
       document.getElementById('status').style.setProperty('display', 'none', 'important');
     }
+
+    // Disable Homebridge's SAVE button until Save Configuration is clicked
+    homebridge.hideSchemaForm();
+    homebridge.disableSave();
 
     // Pre-fill from existing config on load
     homebridge.getPluginConfig().then(configs => {

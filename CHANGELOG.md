@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.12] - 2026-05-12
+### Fixed
+- Save Configuration button moved to right (primary action position)
+- Homebridge SAVE button disabled until Save Configuration is clicked
+- Motion and smoke sensor type inference handles truncated zone names (e.g. "Motio", "Smoke D")
+
 ## [0.1.11] - 2026-05-12
 ### Fixed
 - Friendly error messages for connection failures (bad IP, unreachable host, timeout)

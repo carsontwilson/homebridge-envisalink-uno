@@ -71,8 +71,8 @@ function parseZoneTitle(title: string, zoneNumber: number): DiscoveredZone | nul
 
 function inferSensorType(name: string): DiscoveredZone['sensorType'] {
   const lower = name.toLowerCase();
-  if (/motion|pir/.test(lower)) return 'motion';
-  if (/smoke|fire/.test(lower)) return 'smoke';
+  if (/motio|motion|pir/.test(lower)) return 'motion';
+  if (/smok|smoke|fire/.test(lower)) return 'smoke';
   if (/co\b|carbon/.test(lower)) return 'co';
   return 'contact';
 }

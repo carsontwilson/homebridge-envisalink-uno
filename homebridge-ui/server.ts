@@ -48,8 +48,8 @@ function parseHtml(html: string): object {
     if (!name) name = `Zone ${zoneNumber}`;
     const lower = name.toLowerCase();
     let sensorType = 'contact';
-    if (/motion|pir/.test(lower)) sensorType = 'motion';
-    else if (/smoke|fire/.test(lower)) sensorType = 'smoke';
+    if (/motio|motion|pir/.test(lower)) sensorType = 'motion';
+    else if (/smok|smoke|fire/.test(lower)) sensorType = 'smoke';
     else if (/co\b|carbon/.test(lower)) sensorType = 'co';
     zones.push({ zoneNumber, name, state, sensorType });
   }

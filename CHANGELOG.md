@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.17 (2026-05-12)
+
+### Features
+- README now explains how to reset the TPI password via the Eyezon Portal
+
 ## 0.1.16 (2026-05-12)
 
 ### Bug Fixes

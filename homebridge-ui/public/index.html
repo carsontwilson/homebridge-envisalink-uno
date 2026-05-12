@@ -178,7 +178,7 @@
           zones,
         };
         await homebridge.updatePluginConfig([updated]);
-        await homebridge.savePluginConfig();
+        homebridge.savePluginConfig(); // fire and forget — response doesn't return on child bridge
         currentZones = zones;
         homebridge.enableSaveButton();
         showStatus('Configuration saved! Click Save above to restart Homebridge.', 'success');

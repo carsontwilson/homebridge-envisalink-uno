@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.22 (2026-05-12)
+
+### Bug Fixes
+- Fix Save Configuration hanging forever — savePluginConfig() response never returns on child bridge, so we no longer await it
+
 ## 0.1.21 (2026-05-12)
 
 ### Bug Fixes

@@ -8,26 +8,26 @@
 <body>
   <div class="container-fluid">
 
-    <div class="row mb-3 mt-3">
+    <div class="row mb-2 mt-2">
       <div class="col">
-        <p class="text-muted">
+        <p class="text-muted small mb-2">
           Enter your EnvisaLink UNO IP address and password, then click
           <strong>Discover System</strong> to automatically find your zones.
         </p>
       </div>
     </div>
 
-    <div class="row mb-3">
-      <div class="col-md-5">
-        <label for="host" class="form-label">IP Address</label>
-        <input type="text" class="form-control" id="host" placeholder="192.168.1.100">
+    <div class="row g-2 align-items-end mb-3">
+      <div class="col-sm-4">
+        <label for="host" class="form-label mb-1">IP Address</label>
+        <input type="text" class="form-control form-control-sm" id="host" placeholder="192.168.1.100">
       </div>
-      <div class="col-md-4">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="user">
+      <div class="col-sm-4">
+        <label for="password" class="form-label mb-1">Password</label>
+        <input type="password" class="form-control form-control-sm" id="password" placeholder="user">
       </div>
-      <div class="col-md-3 d-flex align-items-end">
-        <button class="btn btn-primary w-100" id="discoverBtn" onclick="discover()">
+      <div class="col-sm-4">
+        <button class="btn btn-primary btn-sm w-100" id="discoverBtn" onclick="discover()">
           Discover System
         </button>
       </div>

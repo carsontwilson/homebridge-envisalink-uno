@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.15 (2026-05-12)
+
+### Features
+- Alarm PIN field now shows help text explaining it must be a valid user code programmed on the panel
+
 ## 0.1.14 (2026-05-12)
 
 ### Features

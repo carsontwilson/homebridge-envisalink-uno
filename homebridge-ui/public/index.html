@@ -178,7 +178,17 @@
           zones,
         };
         await homebridge.updatePluginConfig([updated]);
-        homebridge.savePluginConfig(); // fire and forget — response doesn't return on child bridge
+        homebridge.savePluginConfig();
+
+        // savePluginConfig() response never resolves on a child bridge, so we
+        // verify by reading the config back after a short delay
+        await new Promise(r => setTimeout(r, 800));
+        const savedConfigs = await homebridge.getPluginConfig();
+        const savedZones = savedConfigs[0]?.zones;
+        if (!savedZones || savedZones.length === 0) {
+          throw new Error('Config did not persist — please try again');
+        }
+
         currentZones = zones;
         homebridge.enableSaveButton();
         showStatus('Configuration saved! Click Save above to restart Homebridge.', 'success');

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.23 (2026-05-12)
+
+### Bug Fixes
+- Verify config actually persisted after save by reading it back — surfaces real errors instead of silently assuming success
+
 ## 0.1.22 (2026-05-12)
 
 ### Bug Fixes

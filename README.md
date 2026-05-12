@@ -24,7 +24,7 @@ Search for **`homebridge-envisalink-uno`** in the Homebridge plugin search and i
 
 Your EnvisaLink UNO is accessible via a web browser on your local network. Log in at `http://<uno-ip>/` with:
 - **Username:** `user`
-- **Password:** your TPI password (default is `user` — change this in the UNO web interface under Settings if you haven't already)
+- **Password:** your TPI password. On newer UNO devices the default is the **last 6 characters of the device's MAC address** (printed on the label). On older devices it may be `user`. You can reset or change it via the [Eyezon Portal](https://www.eyezon.com) under Manage Device.
 
 ### 2. Configure the plugin
 

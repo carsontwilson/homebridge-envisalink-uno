@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.16 (2026-05-12)
+
+### Bug Fixes
+- Remove unverified default password claim from README and UI — direct users to check their UNO settings instead
+
 ## 0.1.15 (2026-05-12)
 
 ### Features

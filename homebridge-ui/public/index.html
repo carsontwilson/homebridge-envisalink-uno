@@ -65,23 +65,15 @@
     let configSaved = false;
 
     homebridge.hideSchemaForm();
+    homebridge.disableSaveButton();
 
-    // Intercept Homebridge's SAVE button — validate before allowing
-    homebridge.addEventListener('saveConfig', async () => {
-      const pin = document.getElementById('pin').value.trim();
-      if (!pin) {
-        showStatus('Alarm PIN is required before saving.', 'danger');
-        return false;
-      }
-      if (currentZones.length === 0) {
-        showStatus('Please run Discover System and click Save Configuration first.', 'danger');
-        return false;
-      }
-      if (!configSaved) {
-        showStatus('Please click Save Configuration before saving.', 'warning');
-        return false;
-      }
-    });
+    function inferSensorType(name) {
+      const lower = name.toLowerCase();
+      if (/motio|motion|pir/.test(lower)) return 'motion';
+      if (/smok|smoke|fire/.test(lower)) return 'smoke';
+      if (/co\b|carbon/.test(lower)) return 'co';
+      return 'contact';
+    }
 
     // On load: restore existing config
     homebridge.getPluginConfig().then(configs => {
@@ -92,8 +84,8 @@
 
       if (cfg.zones && cfg.zones.length > 0) {
         currentZones = cfg.zones;
-        configSaved = true;
         renderZones(cfg.zones, cfg.partitionName || 'Home');
+        homebridge.enableSaveButton();
       }
     });
 
@@ -114,6 +106,7 @@
         const result = await homebridge.request('/discover', { host, password });
         currentZones = result.zones;
         renderZones(result.zones, result.partitionName);
+        homebridge.disableSaveButton();
         showStatus(`Found ${result.zones.length} zone(s). Adjust types if needed, then click Save Configuration.`, 'success');
       } catch (err) {
         showStatus(err.message || 'Discovery failed — check your IP address and password.', 'danger');
@@ -182,9 +175,8 @@
         };
         await homebridge.updatePluginConfig([updated]);
         await homebridge.savePluginConfig();
-        // Update currentZones to reflect saved types so subsequent saves are consistent
         currentZones = zones;
-        configSaved = true;
+        homebridge.enableSaveButton();
         showStatus('Configuration saved! Click Save above to restart Homebridge.', 'success');
       } catch (err) {
         showStatus(`Save failed: ${err.message || err}`, 'danger');

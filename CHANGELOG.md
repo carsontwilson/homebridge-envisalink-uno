@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.19 (2026-05-12)
+
+### Bug Fixes
+- Fix SAVE button gating — use correct `disableSaveButton()`/`enableSaveButton()` API
+- SAVE disabled on load until existing config found, disabled again after discovery, enabled only after Save Configuration clicked
+
 ## 0.1.18 (2026-05-12)
 
 ### Bug Fixes

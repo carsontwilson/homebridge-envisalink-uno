@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.10] - 2026-05-12
+### Fixed
+- Add repository, bugs, and homepage fields to package.json so Homebridge can fetch release notes from GitHub
+
 ## [0.1.9] - 2026-05-12
 ### Fixed
 - Password and PIN no longer appear in debug logs

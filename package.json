@@ -1,6 +1,6 @@
 {
   "name": "homebridge-envisalink-uno",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Homebridge plugin for the EnvisaLink UNO alarm system — auto-discovers zones, supports arm/disarm/night via HomeKit",
   "type": "module",
   "main": "dist/index.js",
@@ -31,6 +31,14 @@
   ],
   "author": "Carson Wilson",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carsontwilson/homebridge-envisalink-uno"
+  },
+  "bugs": {
+    "url": "https://github.com/carsontwilson/homebridge-envisalink-uno/issues"
+  },
+  "homepage": "https://github.com/carsontwilson/homebridge-envisalink-uno#readme",
   "engines": {
     "node": "^22.10.0 || ^24.0.0",
     "homebridge": "^1.8.0 || ^2.0.0"

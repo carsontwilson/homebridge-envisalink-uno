@@ -5,10 +5,16 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc -p tsconfig.ui.json",
     "watch": "tsc --watch",
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint src --ext .ts",
+    "prepublishOnly": "npm run build"
   },
+  "files": [
+    "dist/",
+    "homebridge-ui/",
+    "config.schema.json"
+  ],
   "keywords": [
     "homebridge-plugin",
     "envisalink",

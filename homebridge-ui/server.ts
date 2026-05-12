@@ -1,4 +1,4 @@
-import { discoverSystem } from '../src/unoHttp.js';
+import { discoverSystem } from '../dist/unoHttp.js';
 
 // Homebridge custom UI server — runs inside the Homebridge process
 // Receives requests from the frontend via homebridge.request()

@@ -1,5 +1,7 @@
 node_modules/
 dist/
+homebridge-ui/server.js
+homebridge-ui/server.js.map
 *.log
 .env
 .env.local

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.7] - 2026-05-12
+### Fixed
+- Include CHANGELOG.md in published npm package so Homebridge can display it
+
 ## [0.1.6] - 2026-05-12
 ### Fixed
 - UI server now uses `HomebridgePluginUiServer` from `@homebridge/plugin-ui-utils` and calls `this.ready()` — without this the modal spins indefinitely

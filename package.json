@@ -1,6 +1,6 @@
 {
   "name": "homebridge-envisalink-uno",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Homebridge plugin for the EnvisaLink UNO alarm system — auto-discovers zones, supports arm/disarm/night via HomeKit",
   "type": "module",
   "main": "dist/index.js",
@@ -13,7 +13,8 @@
   "files": [
     "dist/",
     "homebridge-ui/",
-    "config.schema.json"
+    "config.schema.json",
+    "CHANGELOG.md"
   ],
   "keywords": [
     "homebridge-plugin",

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.8] - 2026-05-12
+### Fixed
+- UI server compiled as true ESM with native import statements — fixes `require is not defined` error when Homebridge forks server.js under Node with "type":"module"
+
 ## [0.1.7] - 2026-05-12
 ### Fixed
 - Include CHANGELOG.md in published npm package so Homebridge can display it

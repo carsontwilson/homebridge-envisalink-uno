@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.6] - 2026-05-12
+### Fixed
+- UI server now uses `HomebridgePluginUiServer` from `@homebridge/plugin-ui-utils` and calls `this.ready()` — without this the modal spins indefinitely
+- Dynamic `import()` wrapper allows CJS-compiled server.js to load the ESM-only plugin-ui-utils package
+
 ## [0.1.5] - 2026-05-12
 ### Fixed
 - UI server now loads correctly — Homebridge requires `server.js` as CJS; added `homebridge-ui/package.json` with `"type":"commonjs"` to override root ESM setting

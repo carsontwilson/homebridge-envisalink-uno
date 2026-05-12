@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.11] - 2026-05-12
+### Fixed
+- Friendly error messages for connection failures (bad IP, unreachable host, timeout)
+
 ## [0.1.10] - 2026-05-12
 ### Fixed
 - Add repository, bugs, and homepage fields to package.json so Homebridge can fetch release notes from GitHub

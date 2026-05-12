@@ -18,7 +18,15 @@ function discoverSystem(host: string, password: string): Promise<object> {
       res.on('data', (chunk: string) => { body += chunk; });
       res.on('end', () => { try { resolve(parseHtml(body)); } catch (e) { reject(e); } });
     });
-    req.on('error', reject);
+    req.on('error', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'ENOTFOUND' || err.code === 'ECONNREFUSED') {
+        reject(new Error(`Could not reach EnvisaLink UNO at ${host} — check the IP address`));
+      } else if (err.code === 'ETIMEDOUT') {
+        reject(new Error(`Connection timed out reaching ${host} — check the IP address and network`));
+      } else {
+        reject(new Error(`Connection error: ${err.message}`));
+      }
+    });
     req.on('timeout', () => { req.destroy(); reject(new Error('Connection timed out')); });
     req.end();
   });

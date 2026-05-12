@@ -81,7 +81,7 @@
         renderResults(result);
         showStatus(`Found ${result.zones.length} zone(s).`, 'success');
       } catch (err) {
-        showStatus(`Discovery failed: ${err.message || err}`, 'danger');
+        showStatus(err.message || 'Discovery failed — check your IP address and password', 'danger');
       } finally {
         btn.disabled = false;
         btn.textContent = 'Discover System';

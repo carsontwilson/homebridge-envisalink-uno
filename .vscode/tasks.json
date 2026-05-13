@@ -1,0 +1,74 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🔨 Build",
+      "type": "shell",
+      "command": "npm run build",
+      "group": "build",
+      "problemMatcher": "$tsc",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "🚀 Deploy to Homebridge",
+      "type": "shell",
+      "command": "npm run build && rsync -av --delete dist/ homebridge-ui/ config.schema.json package.json icon.png pinky@thebrain.digital-flux.com:/opt/stacks/volumes/homebridge/node_modules/homebridge-envisalink-uno/ && ssh pinky@thebrain.digital-flux.com 'docker exec homebridge kill -SIGUSR2 $(docker exec homebridge cat /homebridge/homebridge.pid 2>/dev/null) 2>/dev/null || true'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "🚀 Deploy + Restart Homebridge",
+      "type": "shell",
+      "command": "npm run build && rsync -av --delete dist/ homebridge-ui/ config.schema.json package.json icon.png pinky@thebrain.digital-flux.com:/opt/stacks/volumes/homebridge/node_modules/homebridge-envisalink-uno/ && ssh pinky@thebrain.digital-flux.com 'docker restart homebridge'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "📋 View Homebridge Logs",
+      "type": "shell",
+      "command": "ssh pinky@thebrain.digital-flux.com 'docker logs homebridge --follow --since 0m 2>&1 | grep -i envisalink'",
+      "problemMatcher": [],
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    }
+  ]
+}

@@ -40,7 +40,16 @@ Open the plugin settings in Homebridge and enter:
 
 Then click **Discover System** to automatically find all your zones. Review the zone types (contact, motion, smoke, CO), then click **Save Configuration** followed by **Save**.
 
-### 3. HomeKit
+### 3. Network accessibility
+
+This plugin runs as a Homebridge child bridge on a dedicated port. For HomeKit to discover it, **that port must be reachable from your iOS device on your local network**.
+
+- The port is shown in Homebridge under the plugin's child bridge settings (the QR code screen)
+- If Homebridge runs in **Docker with bridge networking**, you must explicitly expose this port in your container configuration
+- If Homebridge runs with **macvlan/host networking or natively**, the port is accessible automatically
+- Set the port to a **fixed value** in the child bridge settings — if it changes on every restart, HomeKit will lose the device
+
+### 4. HomeKit
 
 After Homebridge restarts, your alarm system will appear in HomeKit as:
 - A **Security System** accessory for arm/disarm/stay/night

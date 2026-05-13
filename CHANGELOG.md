@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.24 (2026-05-13)
+
+### Bug Fixes
+- Fix arm commands not working — TPI commands require `$` frame terminator (e.g. `^09,1$` not `^09,1`)
+- Fix Night Arm — UNO has no `^0A` command; map Night to Stay Arm (`^08`) instead
+- Fix mDNS discovery — Homebridge requires explicit network interface binding on macvlan (documented in README)
+
 ## 0.1.23 (2026-05-12)
 
 ### Bug Fixes

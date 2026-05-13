@@ -97,13 +97,14 @@ export class UnoClient extends EventEmitter {
   }
 
   sendNightArm(partition = 1): void {
-    this.send(`${CMD.NIGHT_ARM},${partition}`);
+    // UNO has no native night arm command — map to stay arm (zero entry delay)
+    this.send(`${CMD.STAY_ARM},${partition}`);
   }
 
   sendDisarm(pin: string, partition = 1): void {
     const cmd = `${CMD.DISARM},${partition},${pin}`;
     this.log.debug(`TPI send: ${CMD.DISARM},${partition},****`);
-    if (this.socket && !this.socket.destroyed) this.socket.write(cmd + '\n');
+    if (this.socket && !this.socket.destroyed) this.socket.write(cmd + '$\n');
   }
 
   private send(cmd: string): void {
@@ -112,7 +113,7 @@ export class UnoClient extends EventEmitter {
       return;
     }
     this.log.debug(`TPI send: ${cmd}`);
-    this.socket.write(cmd + '\n');
+    this.socket.write(cmd + '$\n');
   }
 
   private processBuffer(): void {

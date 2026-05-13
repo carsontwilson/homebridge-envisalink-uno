@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.0 (2026-05-13)
+
+### First stable release 🎉
+- Auto-discovery of zones via UNO HTTP interface
+- Arm, Away, Stay, Disarm all working via TPI
+- Night arm mapped to Stay (see README for limitation and EyezOn feature request)
+- Custom Homebridge UI with Discover System button
+- Zone sensors: Contact, Motion, Smoke, CO
+- mDNS advertising fixed for Docker/macvlan setups
+- Note EyezOn feature request for Night arm TPI command
+
+## 0.1.25 (2026-05-13)
+
+### Documentation
+- Note EyezOn feature request for Night arm TPI command in README
+
 ## 0.1.25 (2026-05-13)
 
 ### Documentation

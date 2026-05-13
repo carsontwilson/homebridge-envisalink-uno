@@ -30,7 +30,13 @@ export class EnvisalinkUnoPlatform implements DynamicPlatformPlugin {
       return;
     }
 
-    this.api.on('didFinishLaunching', () => this.discoverDevices());
+    this.api.on('didFinishLaunching', () => {
+      try {
+        this.discoverDevices();
+      } catch (err) {
+        this.log.error(`Failed to initialize plugin: ${err}`);
+      }
+    });
     this.api.on('shutdown', () => this.client?.destroy());
   }
 

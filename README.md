@@ -57,6 +57,23 @@ After Homebridge restarts, your alarm system will appear in HomeKit as:
 
 ---
 
+## HomeKit arm modes
+
+| HomeKit mode | UNO command | Behaviour | Notes |
+|---|---|---|---|
+| **Home** | `^08` Stay Arm | Perimeter armed, motion sensors off, entry delay active | — |
+| **Away** | `^09` Away Arm | Fully armed, all sensors active, entry delay active | — |
+| **Night** | `^08` Stay Arm | Same as Home/Stay | See limitation below |
+| **Off** | `^12` Disarm | Disarmed | Requires alarm PIN |
+
+### Night arm limitation
+
+HomeKit's **Night** mode is intended to mean "Stay with no entry delay" (alarm triggers instantly). The UNO TPI has no command for this — `^08` (Stay) and `^09` (Away) are the only arm commands available locally. The Eyezon app achieves "Arm No Entry (`*9`)" via their cloud service, which is not accessible to local integrations.
+
+Until EyezOn exposes a native TPI command for instant/no-entry-delay arm (e.g. `^0A`), **Night and Home map to the same behaviour**. A feature request has been filed with EyezOn to add this.
+
+The UNO correctly reports `ARMED_ZERO_ENTRY_DELAY` status when the panel is in this mode (e.g. set from the physical keypad), and HomeKit will show Night when that state is detected.
+
 ## Supported zone types
 
 | Type | HomeKit accessory |

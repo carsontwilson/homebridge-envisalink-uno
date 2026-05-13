@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.25 (2026-05-13)
+
+### Documentation
+- Document HomeKit arm mode mapping and Night arm limitation in README
+- Night arm maps to Stay arm until EyezOn exposes a native TPI command
+
 ## 0.1.24 (2026-05-13)
 
 ### Bug Fixes

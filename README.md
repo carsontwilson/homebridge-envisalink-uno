@@ -73,7 +73,7 @@ After Homebridge restarts, your alarm system will appear in HomeKit as:
 
 HomeKit's **Night** mode is intended to mean "Stay with no entry delay" (alarm triggers instantly). The UNO TPI has no command for this — `^08` (Stay) and `^09` (Away) are the only arm commands available locally. The Eyezon app achieves "Arm No Entry (`*9`)" via their cloud service, which is not accessible to local integrations.
 
-Until EyezOn exposes a native TPI command for instant/no-entry-delay arm (e.g. `^0A`), **Night and Home map to the same behaviour**. A feature request has been filed with EyezOn to add this — if you're a UNO customer and want this feature, consider contacting EyezOn support to add weight to the request.
+The UNO firmware acknowledges `^0A` but it has no effect on the panel. Until EyezOn implements it, **Night and Home map to the same behaviour** (Stay Arm). A feature request has been filed with EyezOn — if you're a UNO customer and want this feature, consider contacting EyezOn/Envisacor support to add weight to the request.
 
 The UNO correctly reports `ARMED_ZERO_ENTRY_DELAY` status when the panel is in this mode (e.g. set from the physical keypad), and HomeKit will show Night when that state is detected.
 

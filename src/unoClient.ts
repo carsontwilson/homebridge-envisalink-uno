@@ -97,7 +97,7 @@ export class UnoClient extends EventEmitter {
   }
 
   sendNightArm(partition = 1): void {
-    // UNO has no native night arm command — map to stay arm (zero entry delay)
+    // ^0A is acknowledged by UNO firmware but has no effect — map to Stay arm
     this.send(`${CMD.STAY_ARM},${partition}`);
   }
 

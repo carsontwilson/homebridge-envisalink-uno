@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.7 (2026-05-14)
+
+### Bug Fixes
+- Revert Night arm to Stay arm — ^0A is acknowledged by UNO firmware but has no effect on the panel
+
 ## 1.0.0 (2026-05-13)
 
 ### First stable release 🎉

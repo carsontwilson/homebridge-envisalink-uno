@@ -24,6 +24,11 @@ export interface HostInfo {
   firmware: string;
 }
 
+export interface UnconfirmedCommand {
+  command: string;
+  partition: number;
+}
+
 export declare interface UnoClient {
   on(event: 'zoneUpdate', listener: (update: ZoneUpdate) => void): this;
   on(event: 'partitionUpdate', listener: (update: PartitionUpdate) => void): this;
@@ -31,6 +36,7 @@ export declare interface UnoClient {
   on(event: 'hostInfo', listener: (info: HostInfo) => void): this;
   on(event: 'connected', listener: () => void): this;
   on(event: 'disconnected', listener: () => void): this;
+  on(event: 'commandUnconfirmed', listener: (info: UnconfirmedCommand) => void): this;
 }
 
 export class UnoClient extends EventEmitter {
@@ -39,6 +45,8 @@ export class UnoClient extends EventEmitter {
   private heartbeatTimer: ReturnType<typeof setInterval> | null = null;
   private lastMessageAt = 0;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private disarmConfirmTimer: ReturnType<typeof setTimeout> | null = null;
+  private lastPartitionUpdateAt = 0;
   private destroyed = false;
 
   // Track last known zone states so we can diff on each %01
@@ -60,6 +68,7 @@ export class UnoClient extends EventEmitter {
 
     this.socket = new net.Socket();
     this.socket.setEncoding('utf8');
+    this.socket.setKeepAlive(true, 30_000);
 
     this.socket.on('data', (data: string) => {
       this.lastMessageAt = Date.now();
@@ -85,6 +94,7 @@ export class UnoClient extends EventEmitter {
     this.destroyed = true;
     this.stopHeartbeat();
     if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    if (this.disarmConfirmTimer) clearTimeout(this.disarmConfirmTimer);
     this.socket?.destroy();
   }
 
@@ -102,18 +112,40 @@ export class UnoClient extends EventEmitter {
   }
 
   sendDisarm(pin: string, partition = 1): void {
-    const cmd = `${CMD.DISARM},${partition},${pin}`;
-    this.log.debug(`TPI send: ${CMD.DISARM},${partition},****`);
-    if (this.socket && !this.socket.destroyed) this.socket.write(cmd + '$\n');
+    const sent = this.send(`${CMD.DISARM},${partition},${pin}`, `${CMD.DISARM},${partition},****`);
+    if (sent) this.awaitDisarmConfirmation(partition);
   }
 
-  private send(cmd: string): void {
+  /**
+   * Writing to a half-open socket succeeds silently, so a send is not proof the
+   * panel got the command. Expect a %02 partition update to follow; if none
+   * arrives, surface it rather than leaving the caller to assume success.
+   */
+  private awaitDisarmConfirmation(partition: number): void {
+    if (this.disarmConfirmTimer) clearTimeout(this.disarmConfirmTimer);
+    const sentAt = Date.now();
+    this.disarmConfirmTimer = setTimeout(() => {
+      this.disarmConfirmTimer = null;
+      if (this.lastPartitionUpdateAt > sentAt) return;
+      this.log.error(
+        `Disarm sent to partition ${partition} but the panel did not confirm — ` +
+        'the command may not have reached it. Verify at the keypad.',
+      );
+      this.emit('commandUnconfirmed', { command: 'disarm', partition } satisfies UnconfirmedCommand);
+      // No state change came back, so treat the link as suspect and rebuild it.
+      this.socket?.destroy();
+    }, 5_000);
+  }
+
+  /** Returns false if the command could not be written. */
+  private send(cmd: string, logAs?: string): boolean {
     if (!this.socket || this.socket.destroyed) {
-      this.log.warn(`Cannot send command — not connected: ${cmd}`);
-      return;
+      this.log.warn(`Cannot send command — not connected: ${logAs ?? cmd}`);
+      return false;
     }
-    this.log.debug(`TPI send: ${cmd}`);
+    this.log.debug(`TPI send: ${logAs ?? cmd}`);
     this.socket.write(cmd + '$\n');
+    return true;
   }
 
   private processBuffer(): void {
@@ -194,6 +226,7 @@ export class UnoClient extends EventEmitter {
   }
 
   private parsePartitionState(data: string): void {
+    this.lastPartitionUpdateAt = Date.now();
     // %02 data: 16 hex chars = 8 bytes, one per partition slot
     // Parse each byte as HEX (critical — the original plugin got this wrong)
     for (let i = 0; i < 8; i++) {
@@ -252,8 +285,13 @@ export class UnoClient extends EventEmitter {
       if (elapsed > 180_000) {
         this.log.warn('Heartbeat timeout — reconnecting');
         this.socket?.destroy();
+        return;
       }
-    }, 30_000);
+      // Actively poll so an idle connection still produces traffic. The UNO is
+      // push-only and can go silent for hours, which lets a stateful firewall
+      // drop the conntrack entry and leave us with a half-open socket.
+      this.send(CMD.HOST_INFO);
+    }, 60_000);
   }
 
   private stopHeartbeat(): void {

@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.8 (2026-07-22)
+
+### Bug Fixes
+- Prevent silent disarm failure on a half-open TPI socket. The UNO is push-only
+  and can go idle long enough for a stateful firewall to drop the connection
+  without either side noticing — writes were accepted and logged but never
+  reached the panel. Now: an active `^0D` heartbeat every 60s, TCP keepalive,
+  and disarm confirmation (expects a `%02` partition update within 5s or
+  rebuilds the connection). See `doc/DISARM-SILENT-FAILURE.md`.
+- Surface unconfirmed commands as a `StatusFault` on the SecuritySystem
+  accessory instead of only logging them — a failed disarm is now visible in
+  the Home app, not just the Homebridge log.
+
 ## 1.0.7 (2026-05-14)
 
 ### Bug Fixes

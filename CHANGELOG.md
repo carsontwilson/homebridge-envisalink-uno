@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.10 (2026-07-22)
+
+### Bug Fixes
+- Fix the active heartbeat (from 1.0.8) never actually starting. `handleSegment()`
+  bailed early on `segment === 'OK'`, which matched the login response and prevented
+  it from ever reaching the `startHeartbeat()` call. Confirmed via logs: no `TPI
+  login OK` or heartbeat line ever appeared in 1.0.8 or 1.0.9, despite both looking
+  stable in short testing windows. Also made `startHeartbeat()` idempotent
+  (`stopHeartbeat()` first) as a guard against duplicate timers.
+
 ## 1.0.9 (2026-07-22)
 
 ### Bug Fixes

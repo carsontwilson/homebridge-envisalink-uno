@@ -180,7 +180,7 @@ export class UnoClient extends EventEmitter {
   }
 
   private handleSegment(segment: string): void {
-    if (!segment || segment === 'OK') return;
+    if (!segment) return;
 
     // Strip trailing "$"
     const clean = segment.endsWith('$') ? segment.slice(0, -1) : segment;
@@ -278,6 +278,7 @@ export class UnoClient extends EventEmitter {
   }
 
   private startHeartbeat(): void {
+    this.stopHeartbeat();
     this.lastMessageAt = Date.now();
     this.heartbeatTimer = setInterval(() => {
       const elapsed = Date.now() - this.lastMessageAt;

@@ -47,6 +47,16 @@ In `src/unoClient.ts`:
    long since data last *arrived* and never sent anything, so it couldn't keep
    conntrack alive. (It also never fired: no `Heartbeat timeout` line appears in
    the logs.) Now polls `^0D` (HostInfo, read-only) every 60s.
+   **Correction (1.0.10):** this "fix," as originally written in 1.0.8/1.0.9, never
+   actually ran. `handleSegment()` had `if (!segment || segment === 'OK') return;` at
+   the top, which matches the standalone login `"OK"` response and returns before
+   ever reaching the `startHeartbeat()` call further down. Confirmed via logs: `TPI
+   login OK` and any heartbeat line never appeared once across the full 1.0.8/1.0.9
+   test window, including several stable minutes that looked like a working fix but
+   weren't — the observation window was just too short to hit the original bug's
+   hours-long failure mode either way. Fixed in 1.0.10 by removing `segment === 'OK'`
+   from the bail, and made `startHeartbeat()` idempotent (`stopHeartbeat()` first) in
+   case any other `"OK"`-shaped segment re-triggers it.
 2. ~~`socket.setKeepAlive(true, 30_000)` on connect~~ — **added in 1.0.8, removed in
    1.0.9.** Deployed 2026-07-22 and immediately caused `TPI socket error: read
    ETIMEDOUT` every ~40s, right after login, well before the first heartbeat poll
@@ -64,9 +74,13 @@ In `src/unoClient.ts`:
 
 ## Still to do
 
-- [ ] **Verify an arm/disarm cycle actually works on firmware `01.01.188`.** The
-      read path is confirmed healthy; the *write* path has not been tested since
-      the firmware update. Do this while home and able to reach the keypad.
+- [x] **Verify an arm/disarm cycle actually works on firmware `01.01.188`.** Live
+      tested 2026-07-22: armed (Stay) then disarmed 5s later, panel ack'd both
+      (`^08,00` / `^12,00`) and confirmed via real `%02` partition updates within
+      the 5s confirmation window. Write path works.
+- [ ] **Confirm the heartbeat actually runs post-1.0.10** — check for `TPI login OK`
+      and periodic `TPI send: ^0D` / `%05,` response lines in the logs, not just
+      absence of errors. This is the thing that was silently broken in 1.0.8/1.0.9.
 - [x] Surface `commandUnconfirmed` to HomeKit as a fault on the partition
       accessory, so a failed disarm is visible in the UI rather than log-only.
       `partitionAccessory.ts` now exposes `StatusFault` on the SecuritySystem

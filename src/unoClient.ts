@@ -68,7 +68,6 @@ export class UnoClient extends EventEmitter {
 
     this.socket = new net.Socket();
     this.socket.setEncoding('utf8');
-    this.socket.setKeepAlive(true, 30_000);
 
     this.socket.on('data', (data: string) => {
       this.lastMessageAt = Date.now();

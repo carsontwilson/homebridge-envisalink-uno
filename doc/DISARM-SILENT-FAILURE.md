@@ -47,7 +47,14 @@ In `src/unoClient.ts`:
    long since data last *arrived* and never sent anything, so it couldn't keep
    conntrack alive. (It also never fired: no `Heartbeat timeout` line appears in
    the logs.) Now polls `^0D` (HostInfo, read-only) every 60s.
-2. **`socket.setKeepAlive(true, 30_000)`** on connect — TCP-level defence in depth.
+2. ~~`socket.setKeepAlive(true, 30_000)` on connect~~ — **added in 1.0.8, removed in
+   1.0.9.** Deployed 2026-07-22 and immediately caused `TPI socket error: read
+   ETIMEDOUT` every ~40s, right after login, well before the first heartbeat poll
+   could even fire. The UNO's TCP stack appears not to handle OS-level keepalive
+   probes gracefully (drops or resets on them) — plausible for embedded/IoT
+   hardware. The active heartbeat above is real application traffic the UNO
+   already handles fine (it responds with `%05`), so it doesn't need TCP-level
+   keepalive as backup. Do not re-add `setKeepAlive` on this socket.
 3. **Disarm confirmation.** `sendDisarm` was the only command bypassing `send()`,
    with a copy of the connected-check that had *no* warning branch — so it failed
    silently. It now routes through `send()` (which returns `false` and warns if it

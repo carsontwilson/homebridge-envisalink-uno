@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.9 (2026-07-22)
+
+### Bug Fixes
+- Remove `socket.setKeepAlive()`, added in 1.0.8. Deployed and immediately caused
+  a connection to drop with `ETIMEDOUT` every ~40 seconds, before the active
+  heartbeat even got a chance to run. The UNO's TCP stack does not appear to
+  handle OS-level keepalive probes gracefully. The active `^0D` heartbeat poll
+  (also from 1.0.8) is unaffected and remains the actual fix for the original
+  idle-connection issue — see `doc/DISARM-SILENT-FAILURE.md`.
+
 ## 1.0.8 (2026-07-22)
 
 ### Bug Fixes

@@ -5,12 +5,13 @@ import type {
   Service,
 } from 'homebridge';
 import type { EnvisalinkUnoPlatform } from './platform.js';
-import type { UnoClient, PartitionUpdate } from './unoClient.js';
+import type { UnoClient, PartitionUpdate, UnconfirmedCommand } from './unoClient.js';
 
 export class PartitionAccessory {
   private readonly service: Service;
   private currentState: CharacteristicValue;
   private targetState: CharacteristicValue;
+  private statusFault: CharacteristicValue;
 
   constructor(
     private readonly platform: EnvisalinkUnoPlatform,
@@ -23,6 +24,7 @@ export class PartitionAccessory {
 
     this.currentState = Characteristic.SecuritySystemCurrentState.DISARMED;
     this.targetState = Characteristic.SecuritySystemTargetState.DISARM;
+    this.statusFault = Characteristic.StatusFault.NO_FAULT;
 
     accessory.getService(Service.AccessoryInformation)
       ?.setCharacteristic(Characteristic.Manufacturer, 'Eyezon')
@@ -39,9 +41,17 @@ export class PartitionAccessory {
       .onGet(() => this.targetState)
       .onSet((value) => this.handleTargetStateSet(value));
 
+    this.service.getCharacteristic(Characteristic.StatusFault)
+      .onGet(() => this.statusFault);
+
     this.client.on('partitionUpdate', (update: PartitionUpdate) => {
       if (update.partition !== 1) return;
       this.handlePartitionUpdate(update);
+    });
+
+    this.client.on('commandUnconfirmed', (info: UnconfirmedCommand) => {
+      if (info.partition !== 1) return;
+      this.handleCommandUnconfirmed(info);
     });
   }
 
@@ -96,6 +106,44 @@ export class PartitionAccessory {
     if (target !== this.targetState) {
       this.targetState = target;
       this.service.updateCharacteristic(Characteristic.SecuritySystemTargetState, target);
+    }
+
+    if (this.statusFault !== Characteristic.StatusFault.NO_FAULT) {
+      this.statusFault = Characteristic.StatusFault.NO_FAULT;
+      this.service.updateCharacteristic(Characteristic.StatusFault, this.statusFault);
+    }
+  }
+
+  private handleCommandUnconfirmed(info: UnconfirmedCommand): void {
+    const { Characteristic } = this.platform.api.hap;
+    this.log.error(
+      `${info.command} on partition ${info.partition} was not confirmed by the panel — ` +
+      'flagging a HomeKit fault so it is visible outside the logs.',
+    );
+
+    this.statusFault = Characteristic.StatusFault.GENERAL_FAULT;
+    this.service.updateCharacteristic(Characteristic.StatusFault, this.statusFault);
+
+    // The set already committed optimistically in handleTargetStateSet — snap it
+    // back to match reality instead of leaving HomeKit showing a change that
+    // never happened.
+    const revertedTarget = this.targetForCurrentState(this.currentState);
+    if (revertedTarget !== this.targetState) {
+      this.targetState = revertedTarget;
+      this.service.updateCharacteristic(Characteristic.SecuritySystemTargetState, revertedTarget);
+    }
+  }
+
+  private targetForCurrentState(current: CharacteristicValue): CharacteristicValue {
+    const { Characteristic } = this.platform.api.hap;
+    const C = Characteristic.SecuritySystemCurrentState;
+    const T = Characteristic.SecuritySystemTargetState;
+
+    switch (current) {
+      case C.STAY_ARM: return T.STAY_ARM;
+      case C.AWAY_ARM: return T.AWAY_ARM;
+      case C.NIGHT_ARM: return T.NIGHT_ARM;
+      default: return T.DISARM;
     }
   }
 

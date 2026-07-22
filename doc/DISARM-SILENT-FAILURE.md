@@ -60,8 +60,13 @@ In `src/unoClient.ts`:
 - [ ] **Verify an arm/disarm cycle actually works on firmware `01.01.188`.** The
       read path is confirmed healthy; the *write* path has not been tested since
       the firmware update. Do this while home and able to reach the keypad.
-- [ ] Surface `commandUnconfirmed` to HomeKit as a fault on the partition
+- [x] Surface `commandUnconfirmed` to HomeKit as a fault on the partition
       accessory, so a failed disarm is visible in the UI rather than log-only.
+      `partitionAccessory.ts` now exposes `StatusFault` on the SecuritySystem
+      service — set on `commandUnconfirmed`, cleared on the next real
+      `partitionUpdate`. Also snaps `targetState` back to match the last known
+      `currentState` instead of leaving HomeKit showing a change that never
+      happened (it was committed optimistically in `handleTargetStateSet`).
 - [ ] Fix the Home Assistant Envisalink credentials (separate from the above).
 - [ ] Consider whether any automation *arms* on a schedule — an automation that
       can arm but not disarm is how this repeats at a bad hour.

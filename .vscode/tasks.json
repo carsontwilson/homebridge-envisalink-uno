@@ -22,7 +22,7 @@
     {
       "label": "🚀 Deploy to Homebridge",
       "type": "shell",
-      "command": "npm run build && rsync -av --delete dist/ homebridge-ui/ config.schema.json package.json icon.png pinky@thebrain.digital-flux.com:/opt/stacks/volumes/homebridge/node_modules/homebridge-envisalink-uno/ && ssh pinky@thebrain.digital-flux.com 'docker exec homebridge kill -SIGUSR2 $(docker exec homebridge cat /homebridge/homebridge.pid 2>/dev/null) 2>/dev/null || true'",
+      "command": "npm run build && rsync -av --delete dist/ homebridge-ui/ config.schema.json package.json homebridge-envisalink-uno.png pinky@thebrain.digital-flux.com:/opt/stacks/volumes/homebridge/node_modules/homebridge-envisalink-uno/ && ssh pinky@thebrain.digital-flux.com 'docker exec homebridge kill -SIGUSR2 $(docker exec homebridge cat /homebridge/homebridge.pid 2>/dev/null) 2>/dev/null || true'",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
@@ -39,7 +39,7 @@
     {
       "label": "🚀 Deploy + Restart Homebridge",
       "type": "shell",
-      "command": "npm run build && rsync -av --delete dist/ homebridge-ui/ config.schema.json package.json icon.png pinky@thebrain.digital-flux.com:/opt/stacks/volumes/homebridge/node_modules/homebridge-envisalink-uno/ && ssh pinky@thebrain.digital-flux.com 'docker restart homebridge'",
+      "command": "npm run build && rsync -av --delete dist/ homebridge-ui/ config.schema.json package.json homebridge-envisalink-uno.png pinky@thebrain.digital-flux.com:/opt/stacks/volumes/homebridge/node_modules/homebridge-envisalink-uno/ && ssh pinky@thebrain.digital-flux.com 'docker restart homebridge'",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
